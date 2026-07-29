@@ -4,7 +4,7 @@
 | --- | --- |
 | 技术决策编号 | T-040 |
 | 日期 | 2026-07-30 |
-| 当前状态 | 等待用户选择 |
+| 当前状态 | 已选择方案 1：`com.walkingundersunshine.xiaojizhang` |
 
 ## 要决定什么
 
@@ -48,5 +48,16 @@
 
 | 日期 | 选择 | 说明 | 状态 |
 | --- | --- | --- | --- |
-| 2026-07-30 | 等待选择方案 1～3 | 用户尚未选择 | 待决定 |
+| 2026-07-30 | 方案 1：`com.walkingundersunshine.xiaojizhang` | 用户明确选择 1，具体理由未说明 | 已决定并写入 Android 工程 |
 
+## 实现结果
+
+- Android namespace：`com.walkingundersunshine.xiaojizhang`。
+- Android Application ID：`com.walkingundersunshine.xiaojizhang`。
+- 启动器显示名称：`晓记账`。
+- 最低版本：Android 10 / API 29。
+- 编译及目标版本：Android API 36。
+- 已加入 Android 网络权限，供无密钥汇率请求及后续用户主动局域网同步使用。
+- 保留 Dart 包名和桌面旧数据标识 `jizhangben`，不影响现有 Windows 账本。
+- Android Debug 首次兼容构建成功；APK 清单复核确认 Application ID、显示名称、最低 API 29、目标 API 36 和网络权限均正确。
+- 当前 APK 只用于编译兼容验证，手机布局和局域网同步尚未完成，不作为可交付版本。
