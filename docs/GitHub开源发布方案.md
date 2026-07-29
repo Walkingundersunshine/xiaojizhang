@@ -4,19 +4,21 @@
 | --- | --- |
 | 决策编号 | T-034 |
 | 日期 | 2026-07-30 |
-| 状态 | GPL-3.0、程序更名和 GitHub 登录已完成，准备首次推送 |
+| 状态 | GitHub 首次公开推送已完成 |
 | 目标 | 创建公开 GitHub 源代码仓库 |
 
-## 发布前检查结果
+## 发布与验证结果
 
 - GitHub CLI `2.96.0` 已通过 winget 安装并验证。
 - 可执行文件：`C:\Program Files\GitHub CLI\gh.exe`。
-- 当前尚未登录任何 GitHub 账号。
-- 当前 `.git` 目录为空，不是有效仓库；可以直接用 `git init` 安全初始化，不需要删除项目文件。
+- GitHub CLI 已登录账号 `Walkingundersunshine`。
+- 本地 Git 仓库已经初始化，`main` 分支已关联远端 `origin/main`。
 - 敏感模式扫描未发现真实 API 密钥、访问令牌或私钥；唯一的 `secret.jizhang` 是日志脱敏自动测试中的虚构文件名。
 - `.gitignore` 已排除项目内 Flutter SDK、缓存、构建目录、内部测试 ZIP、数据库、`.jizhang` 备份和 JSONL 日志。
 - GitHub 将纯中文名称规范化为 `-`；依据既定拼音规则，仓库 URL 名称已改为 `xiaojizhang`，页面产品名称为“晓记账”，可见性为 Public。
 - 仓库地址：`https://github.com/Walkingundersunshine/xiaojizhang`。
+- GitHub 默认分支为 `main`，仓库为 Public，平台已正确识别 GNU GPL v3 许可证。
+- 首次开源提交为 `d564b96`（`Open-source 晓记账 under GPL-3.0`），已成功推送并保留远端原有 `Initial commit`。
 - 必须使用 ASCII 的技术名称统一采用拼音 `xiaojizhang`。
 - `dist/` 内的无签名内部测试包不提交到源码历史。如以后需要公开二进制文件，应单独使用 GitHub Releases，并在发布前再次确认签名与安全提示。
 
@@ -61,3 +63,4 @@
 | 2026-07-30 | 方案 3：GNU GPL v3 | 用户明确选择 3，具体理由未说明 | 已决定 |
 | 2026-07-30 | GitHub 公开仓库名称 | `晓记账` | 已决定 |
 | 2026-07-30 | ASCII 技术名称 | 使用拼音 `xiaojizhang` | 已决定 |
+| 2026-07-30 | GitHub 首次公开推送 | `main` 分支提交 `d564b96` 已推送，仓库、README 和 GPL-3.0 均已在线验证 | 已完成 |
