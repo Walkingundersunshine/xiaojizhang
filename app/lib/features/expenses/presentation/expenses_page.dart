@@ -15,7 +15,9 @@ final filteredExpenseItemsProvider = StreamProvider.autoDispose
     });
 
 class ExpensesPage extends ConsumerStatefulWidget {
-  const ExpensesPage({super.key});
+  const ExpensesPage({this.useMobileLayout = false, super.key});
+
+  final bool useMobileLayout;
 
   @override
   ConsumerState<ExpensesPage> createState() => _ExpensesPageState();
@@ -50,20 +52,30 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
   @override
   Widget build(BuildContext context) {
     final expenses = ref.watch(filteredExpenseItemsProvider(_filter));
+    final useMobileLayout = widget.useMobileLayout;
     return Scaffold(
       appBar: AppBar(
         title: const Text('花销记录'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: FilledButton.icon(
+        actions: useMobileLayout
+            ? null
+            : [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: FilledButton.icon(
+                    onPressed: _openNew,
+                    icon: const Icon(Icons.add),
+                    label: const Text('记一笔'),
+                  ),
+                ),
+              ],
+      ),
+      floatingActionButton: useMobileLayout && !_showEditor
+          ? FloatingActionButton.extended(
               onPressed: _openNew,
               icon: const Icon(Icons.add),
               label: const Text('记一笔'),
-            ),
-          ),
-        ],
-      ),
+            )
+          : null,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final useSidePanel = constraints.maxWidth >= 920;

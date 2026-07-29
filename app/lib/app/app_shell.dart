@@ -4,6 +4,7 @@ import 'package:jizhangben/features/categories/presentation/category_management_
 import 'package:jizhangben/features/expenses/presentation/expenses_page.dart';
 import 'package:jizhangben/features/settings/presentation/settings_page.dart';
 import 'package:jizhangben/features/statistics/presentation/statistics_page.dart';
+import 'package:jizhangben/features/sync/presentation/sync_page.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -15,7 +16,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   var _selectedIndex = 0;
 
-  static const _destinations = <NavigationRailDestination>[
+  static const _railDestinations = <NavigationRailDestination>[
     NavigationRailDestination(
       icon: Icon(Icons.receipt_long_outlined),
       selectedIcon: Icon(Icons.receipt_long),
@@ -32,23 +33,70 @@ class _AppShellState extends State<AppShell> {
       label: Text('分类管理'),
     ),
     NavigationRailDestination(
+      icon: Icon(Icons.sync_outlined),
+      selectedIcon: Icon(Icons.sync),
+      label: Text('同步'),
+    ),
+    NavigationRailDestination(
       icon: Icon(Icons.settings_outlined),
       selectedIcon: Icon(Icons.settings),
       label: Text('设置'),
     ),
   ];
 
-  Widget get _selectedPage => switch (_selectedIndex) {
-    0 => const ExpensesPage(),
-    1 => const StatisticsPage(),
-    2 => const CategoryManagementPage(),
-    _ => const SettingsPage(),
-  };
+  static const _barDestinations = <NavigationDestination>[
+    NavigationDestination(
+      icon: Icon(Icons.receipt_long_outlined),
+      selectedIcon: Icon(Icons.receipt_long),
+      label: '花销',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.donut_large_outlined),
+      selectedIcon: Icon(Icons.donut_large),
+      label: '统计',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.category_outlined),
+      selectedIcon: Icon(Icons.category),
+      label: '分类',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.sync_outlined),
+      selectedIcon: Icon(Icons.sync),
+      label: '同步',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.settings_outlined),
+      selectedIcon: Icon(Icons.settings),
+      label: '设置',
+    ),
+  ];
+
+  Widget _selectedPage({required bool useBottomNavigation}) =>
+      switch (_selectedIndex) {
+        0 => ExpensesPage(useMobileLayout: useBottomNavigation),
+        1 => const StatisticsPage(),
+        2 => const CategoryManagementPage(),
+        3 => const SyncPage(),
+        _ => const SettingsPage(),
+      };
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final useBottomNavigation = constraints.maxWidth < 720;
+        if (useBottomNavigation) {
+          return Scaffold(
+            body: _animatedSelectedPage(useBottomNavigation: true),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: _selectedIndex,
+              destinations: _barDestinations,
+              onDestinationSelected: _selectDestination,
+            ),
+          );
+        }
+
         final extended = constraints.maxWidth >= 900;
         return Scaffold(
           body: Row(
@@ -65,25 +113,31 @@ class _AppShellState extends State<AppShell> {
                         )
                       : const Icon(Icons.account_balance_wallet_outlined),
                 ),
-                destinations: _destinations,
+                destinations: _railDestinations,
                 selectedIndex: _selectedIndex,
-                onDestinationSelected: (index) =>
-                    setState(() => _selectedIndex = index),
+                onDestinationSelected: _selectDestination,
               ),
               const VerticalDivider(width: 1),
               Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 180),
-                  child: KeyedSubtree(
-                    key: ValueKey(_selectedIndex),
-                    child: _selectedPage,
-                  ),
-                ),
+                child: _animatedSelectedPage(useBottomNavigation: false),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget _animatedSelectedPage({required bool useBottomNavigation}) =>
+      AnimatedSwitcher(
+        duration: const Duration(milliseconds: 180),
+        child: KeyedSubtree(
+          key: ValueKey(_selectedIndex),
+          child: _selectedPage(useBottomNavigation: useBottomNavigation),
+        ),
+      );
+
+  void _selectDestination(int index) {
+    setState(() => _selectedIndex = index);
   }
 }

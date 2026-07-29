@@ -7,6 +7,41 @@ import 'package:jizhangben/core/database/app_database.dart';
 import 'package:jizhangben/core/database/database_providers.dart';
 
 void main() {
+  testWidgets('手机宽度使用五项底部导航并显示记一笔悬浮按钮', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final database = AppDatabase(NativeDatabase.memory());
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWith((ref) {
+              ref.onDispose(database.close);
+              return database;
+            }),
+          ],
+          child: const JizhangbenApp(),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(NavigationRail), findsNothing);
+      for (final label in ['花销', '统计', '分类', '同步', '设置']) {
+        expect(find.text(label), findsOneWidget);
+      }
+      expect(find.widgetWithText(FloatingActionButton, '记一笔'), findsOneWidget);
+
+      await tester.tap(find.text('同步'));
+      await tester.pumpAndSettle();
+      expect(find.text('局域网双向同步'), findsOneWidget);
+      expect(find.textContaining('安全配对和传输功能正在分阶段实现'), findsOneWidget);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 1));
+    }
+  });
+
   testWidgets('左侧导航可以切换统计页面', (tester) async {
     final database = AppDatabase(NativeDatabase.memory());
     try {
