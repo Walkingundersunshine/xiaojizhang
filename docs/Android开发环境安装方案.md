@@ -4,7 +4,7 @@
 | --- | --- |
 | 技术决策编号 | T-038 |
 | 日期 | 2026-07-30 |
-| 当前状态 | 等待用户选择 |
+| 当前状态 | 已选择并完成方案 1：Android Studio + Google 官方 Android SDK |
 | 当前检查 | Flutter 已启用 Android 支持，但本机未安装 Android SDK |
 
 ## 要决定什么
@@ -49,5 +49,20 @@
 
 | 日期 | 选择 | 说明 | 状态 |
 | --- | --- | --- | --- |
-| 2026-07-30 | 等待选择方案 1～3 | 用户尚未选择 | 待决定 |
+| 2026-07-30 | 方案 1：Android Studio 和官方 Android SDK | 用户明确选择 1，具体理由未说明 | 已完成 |
+
+## 安装与验证结果
+
+- Android Studio：稳定版 `2026.1`，winget 包 `Google.AndroidStudio`。
+- 安装位置：`C:\Program Files\Android\Android Studio`。
+- Android SDK：`C:\Users\Administrator\AppData\Local\Android\Sdk`。
+- Command-line Tools：`22.0`；安装包来自 Google 官方 `dl.google.com`，SHA-1 与官方仓库清单一致。
+- SDK Platform：Android API 36。
+- Build Tools：`36.0.0`。
+- Platform Tools：已安装。
+- NDK：`28.2.13676358`，与当前 Flutter 要求一致。
+- JDK：Android Studio 自带 OpenJDK 21，Flutter 已精确配置该路径。
+- Android SDK 许可证：全部接受。
+- `flutter doctor -v`：Android toolchain 检查通过。
+- 未安装 Android 模拟器系统镜像；先保留磁盘空间，后续优先使用真实 Android 手机测试。
 
