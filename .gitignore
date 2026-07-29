@@ -1,0 +1,33 @@
+# Project-local Flutter SDK and caches
+.tools/
+.agents/
+
+# Local release artifacts
+dist/
+
+# Flutter / Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+**/ephemeral/
+
+# IDE and operating system files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# User data and diagnostics
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.jizhang
+*.jsonl
