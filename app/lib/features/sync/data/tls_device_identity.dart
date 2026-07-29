@@ -68,7 +68,8 @@ TlsDeviceIdentity _generateIdentity(String deviceId, int validityDays) {
     csr,
     validityDays,
     sans: const ['xiaojizhang.local'],
-    keyUsage: const [KeyUsage.DIGITAL_SIGNATURE, KeyUsage.KEY_ENCIPHERMENT],
+    // basic_utils 5.8.2 emits a KeyUsage encoding rejected by BoringSSL.
+    // ExtendedKeyUsage and CA=false remain enforced; see decision T-051.
     extKeyUsage: const [
       ExtendedKeyUsage.SERVER_AUTH,
       ExtendedKeyUsage.CLIENT_AUTH,

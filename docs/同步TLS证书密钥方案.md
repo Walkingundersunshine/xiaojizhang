@@ -101,6 +101,12 @@ Android、Windows、macOS 分别实现原生证书生成，再交给 Flutter TLS
 - 私钥编码为 PKCS#8 PEM，写入已经选择的系统安全存储接口。
 - 证书指纹使用 DER 内容的 SHA-256，固定为 64 位小写十六进制文本。
 - 生成后立即交给 Flutter `SecurityContext` 载入验证，载入失败则不保存或使用。
+
+## 后续真实握手证据与 T-051 决定
+
+在 T-050 HTTPS 传输基础实现中，服务端载入成功并不等于客户端可以完成握手。实测发现 `basic_utils 5.8.2` 生成的 `KeyUsage` 扩展会使 Flutter/BoringSSL 客户端返回 `CANNOT_PARSE_LEAF_CERT`；同一 RSA 3072 证书分别测试无扩展、SAN、ExtendedKeyUsage 和 BasicConstraints 均可握手，只有 KeyUsage 失败。
+
+用户根据新证据选择 T-051 方案 1：省略该不兼容扩展，保留 SAN、`SERVER_AUTH`、`CLIENT_AUTH`、`CA=false`、系统安全存储和 SHA-256 指纹固定。该组合必须通过真实 HTTPS 握手测试，不能再只以 `SecurityContext` 载入成功作为完成标准。
 - 安全存储只有证书或只有私钥时视为损坏，自动清理并要求重新配对。
 - 新增 4 项证书与安全存储测试；全套 42 项测试、代码分析及 Android Debug 构建通过。
 - Windows 安全存储插件仍需完成 T-047 ATL 依赖决策后进行真实系统存取和 Windows 构建验证。
