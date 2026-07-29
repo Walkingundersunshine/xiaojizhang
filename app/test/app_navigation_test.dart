@@ -35,7 +35,8 @@ void main() {
       await tester.tap(find.text('同步'));
       await tester.pumpAndSettle();
       expect(find.text('局域网双向同步'), findsOneWidget);
-      expect(find.textContaining('安全配对和传输功能正在分阶段实现'), findsOneWidget);
+      expect(find.text('扫描电脑二维码'), findsOneWidget);
+      expect(find.text('手动输入配对信息'), findsOneWidget);
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(const Duration(milliseconds: 1));
