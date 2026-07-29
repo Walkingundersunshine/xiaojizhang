@@ -2,6 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+/// Shared lifetime for both pairing QR payloads and the future manual code.
+abstract final class PairingCredentialPolicy {
+  static const validity = Duration(minutes: 2);
+}
+
 /// The only QR payload format accepted by Xiaojizhang pairing.
 final class PairingQrPayload {
   const PairingQrPayload({
@@ -36,7 +41,6 @@ final class PairingQrPayload {
     required int port,
     required String certificateSha256,
     required DateTime issuedAt,
-    required Duration validFor,
   }) {
     final random = Random.secure();
     final tokenBytes = List<int>.generate(32, (_) => random.nextInt(256));
@@ -49,7 +53,7 @@ final class PairingQrPayload {
       certificateSha256: certificateSha256,
       oneTimeToken: base64Url.encode(tokenBytes).replaceAll('=', ''),
       issuedAt: normalizedIssuedAt,
-      expiresAt: normalizedIssuedAt.add(validFor),
+      expiresAt: normalizedIssuedAt.add(PairingCredentialPolicy.validity),
     ).validated(now: normalizedIssuedAt);
   }
 
@@ -186,9 +190,7 @@ final class PairingQrPayload {
     if (!expiresAt.isAfter(issuedAt)) {
       throw const PairingQrFormatException('二维码有效期无效');
     }
-    // The exact UI validity is still a product decision. One hour is only a
-    // hard safety ceiling so malformed or long-lived credentials are rejected.
-    if (expiresAt.difference(issuedAt) > const Duration(hours: 1)) {
+    if (expiresAt.difference(issuedAt) > PairingCredentialPolicy.validity) {
       throw const PairingQrFormatException('二维码有效期过长');
     }
     final normalizedNow = now.toUtc();

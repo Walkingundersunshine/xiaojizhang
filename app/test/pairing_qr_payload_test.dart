@@ -17,7 +17,7 @@ void main() {
     certificateSha256: fingerprint,
     oneTimeToken: token,
     issuedAt: issuedAt,
-    expiresAt: issuedAt.add(const Duration(minutes: 5)),
+    expiresAt: issuedAt.add(PairingCredentialPolicy.validity),
   );
 
   test('严格往返晓记账 v1 配对载荷', () {
@@ -36,7 +36,7 @@ void main() {
     expect(decoded.oneTimeToken, token);
   });
 
-  test('生成一次性 256 位随机令牌', () {
+  test('生成一次性 256 位随机令牌并固定两分钟有效期', () {
     final first = PairingQrPayload.create(
       deviceId: 'device-12345678',
       deviceName: '电脑',
@@ -44,7 +44,6 @@ void main() {
       port: 45678,
       certificateSha256: fingerprint,
       issuedAt: issuedAt,
-      validFor: const Duration(minutes: 5),
     );
     final second = PairingQrPayload.create(
       deviceId: 'device-12345678',
@@ -53,9 +52,13 @@ void main() {
       port: 45678,
       certificateSha256: fingerprint,
       issuedAt: issuedAt,
-      validFor: const Duration(minutes: 5),
     );
 
+    expect(PairingCredentialPolicy.validity, const Duration(minutes: 2));
+    expect(
+      first.expiresAt.difference(first.issuedAt),
+      const Duration(minutes: 2),
+    );
     expect(first.oneTimeToken, hasLength(43));
     expect(
       base64Url.decode(base64Url.normalize(first.oneTimeToken)),
@@ -77,7 +80,7 @@ void main() {
     expect(
       () => PairingQrPayload.parse(
         validPayload().encode(),
-        now: issuedAt.add(const Duration(minutes: 5)),
+        now: issuedAt.add(PairingCredentialPolicy.validity),
       ),
       throwsA(
         isA<PairingQrFormatException>().having(
@@ -96,7 +99,7 @@ void main() {
       certificateSha256: fingerprint,
       oneTimeToken: token,
       issuedAt: issuedAt.add(const Duration(minutes: 3)),
-      expiresAt: issuedAt.add(const Duration(minutes: 8)),
+      expiresAt: issuedAt.add(const Duration(minutes: 5)),
     );
     final futureSource = _encodeUnchecked(future);
     expect(
@@ -112,7 +115,7 @@ void main() {
       certificateSha256: fingerprint,
       oneTimeToken: token,
       issuedAt: issuedAt,
-      expiresAt: issuedAt.add(const Duration(hours: 2)),
+      expiresAt: issuedAt.add(const Duration(minutes: 3)),
     );
     expect(
       () => PairingQrPayload.parse(_encodeUnchecked(longLived), now: issuedAt),
@@ -130,7 +133,7 @@ void main() {
         certificateSha256: fingerprint,
         oneTimeToken: token,
         issuedAt: issuedAt,
-        expiresAt: issuedAt.add(const Duration(minutes: 5)),
+        expiresAt: issuedAt.add(PairingCredentialPolicy.validity),
       );
       expect(
         () => PairingQrPayload.parse(_encodeUnchecked(payload), now: issuedAt),
@@ -146,7 +149,7 @@ void main() {
       certificateSha256: fingerprint,
       oneTimeToken: token,
       issuedAt: issuedAt,
-      expiresAt: issuedAt.add(const Duration(minutes: 5)),
+      expiresAt: issuedAt.add(PairingCredentialPolicy.validity),
     );
     expect(
       () => PairingQrPayload.parse(_encodeUnchecked(payload), now: issuedAt),

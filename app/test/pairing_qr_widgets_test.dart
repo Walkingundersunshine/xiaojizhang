@@ -17,7 +17,7 @@ void main() {
         '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
     oneTimeToken: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8',
     issuedAt: issuedAt,
-    expiresAt: issuedAt.add(const Duration(minutes: 5)),
+    expiresAt: issuedAt.add(PairingCredentialPolicy.validity),
   );
 
   testWidgets('监听服务未启动时不显示伪造二维码', (tester) async {
