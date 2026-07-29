@@ -4,7 +4,7 @@
 | --- | --- |
 | 技术决策编号 | T-047 |
 | 日期 | 2026-07-30 |
-| 当前状态 | 等待用户选择；先完成 T-046 证书方案重新决策 |
+| 当前状态 | 已选择并完成方案 1：安装 Microsoft Visual C++ ATL |
 | 触发原因 | `flutter_secure_storage_windows` 需要 Visual C++ ATL，当前精简 Build Tools 未安装 |
 
 ## 实测结果
@@ -52,5 +52,13 @@
 
 | 日期 | 选择 | 说明 | 状态 |
 | --- | --- | --- | --- |
-| 2026-07-30 | 等待选择方案 1～3 | T-046 重新决定后再确认 | 待决定 |
+| 2026-07-30 | 方案 1：为现有 Build Tools 安装 Microsoft ATL | 用户明确选择 1，具体理由未说明 | 已完成 |
 
+## 安装与验证结果
+
+- 通过 Visual Studio Installer 向现有 Build Tools 2022 17.14.37 增加 `Microsoft.VisualStudio.Component.VC.ATL`，未安装完整 Visual Studio IDE。
+- ATL 头文件 `atlmfc/include/atlstr.h` 已存在，`vswhere` 能识别该实例包含 ATL。
+- Windows Debug `xiaojizhang.exe` 构建成功，安全存储插件编译通过。
+- 新增 Windows 集成测试，使用专用临时键执行真实系统安全存储写入、读取和删除，测试通过且清理完成。
+- 测试没有访问现有账本、备份或其他系统凭据。
+- Android Debug APK 继续构建成功；macOS 钥匙串行为仍需 Mac 实机验证。
