@@ -50,8 +50,13 @@ void main() {
 
     await tester.tap(find.text('手动输入配对信息'));
     await tester.pumpAndSettle();
-    expect(find.text('一次性短码'), findsOneWidget);
+    expect(find.text('6 位一次性短码'), findsOneWidget);
     expect(find.text('等待配对服务'), findsOneWidget);
+    final codeField = tester.widget<TextField>(
+      find.widgetWithText(TextField, '6 位一次性短码'),
+    );
+    expect(codeField.maxLength, 6);
+    expect(codeField.inputFormatters, hasLength(2));
   });
 
   testWidgets('扫码页拒绝普通网址并接受严格载荷', (tester) async {

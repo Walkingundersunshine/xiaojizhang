@@ -65,4 +65,4 @@
 - Android SDK 许可证：全部接受。
 - `flutter doctor -v`：Android toolchain 检查通过。
 - 未安装 Android 模拟器系统镜像；先保留磁盘空间，后续优先使用真实 Android 手机测试。
-
+- 2026-07-31 构建仍成功，但出现“构建工具只理解 SDK XML v3、检测到 v4”的非阻断提醒；当前不自动升级或降级工具。若后续影响构建，必须先提供 Android Gradle Plugin/SDK 工具对齐方案让用户决定。

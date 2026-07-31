@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:jizhangben/features/sync/data/pairing_credentials.dart';
 
 Future<void> showManualPairingDialog(BuildContext context) => showDialog<void>(
   context: context,
@@ -14,24 +16,31 @@ class _ManualPairingDialog extends StatelessWidget {
       title: const Text('手动输入配对信息'),
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: '电脑显示的连接地址',
                 hintText: '例如 192.168.1.20:45678',
               ),
               keyboardType: TextInputType.url,
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
-              decoration: InputDecoration(labelText: '一次性短码'),
+              decoration: const InputDecoration(labelText: '6 位一次性短码'),
               keyboardType: TextInputType.number,
+              maxLength: ManualPairingCodePolicy.length,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(
+                  ManualPairingCodePolicy.length,
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            Text('加密监听服务接入后才能提交；当前入口用于确认备用流程和布局。'),
+            const SizedBox(height: 16),
+            const Text('短码两分钟内有效，连续输入错误 5 次后立即作废。'),
           ],
         ),
       ),
