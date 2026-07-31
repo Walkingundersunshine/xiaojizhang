@@ -69,14 +69,35 @@ class AppPreferences extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Categories, Expenses, ExchangeRates, AppPreferences])
+@TableIndex(
+  name: 'paired_devices_certificate_sha256',
+  columns: {#certificateSha256},
+  unique: true,
+)
+class PairedDevices extends Table {
+  TextColumn get deviceId => text().withLength(min: 8, max: 100)();
+  TextColumn get displayName => text().withLength(min: 1, max: 60)();
+  TextColumn get certificatePem => text().withLength(min: 1, max: 16384)();
+  TextColumn get certificateSha256 => text().withLength(min: 64, max: 64)();
+  IntColumn get pairedAtUtcMilliseconds => integer()();
+  IntColumn get lastSyncAtUtcMilliseconds => integer().nullable()();
+  BoolColumn get isRevoked => boolean().withDefault(const Constant(false))();
+  IntColumn get revokedAtUtcMilliseconds => integer().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {deviceId};
+}
+
+@DriftDatabase(
+  tables: [Categories, Expenses, ExchangeRates, AppPreferences, PairedDevices],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   factory AppDatabase.open() => AppDatabase(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -87,6 +108,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await migrator.createTable(appPreferences);
+      }
+      if (from < 4) {
+        await migrator.createTable(pairedDevices);
       }
     },
     beforeOpen: (details) async {
@@ -139,6 +163,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _ensureDefaultPreferences() async {
     await into(appPreferences).insert(
       AppPreferencesCompanion.insert(
+        id: const Value(1),
         baseCurrencyCode: 'CNY',
         updatedAtUtcMilliseconds: DateTime.now().toUtc().millisecondsSinceEpoch,
       ),

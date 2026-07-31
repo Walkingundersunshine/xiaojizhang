@@ -131,6 +131,35 @@ void main() {
     expect(service.inspectBackupJson(safetySource).expenseCount, 2);
   });
 
+  test('完整备份和恢复都不导出或覆盖已配对设备信任', () async {
+    await database
+        .into(database.pairedDevices)
+        .insert(
+          PairedDevicesCompanion.insert(
+            deviceId: 'android-device-001',
+            displayName: '我的手机',
+            certificatePem: 'public-certificate-placeholder',
+            certificateSha256: List.filled(64, '0').join(),
+            pairedAtUtcMilliseconds: DateTime.utc(
+              2026,
+              8,
+              1,
+            ).millisecondsSinceEpoch,
+          ),
+        );
+
+    final source = await service.createBackupJson();
+    final decoded = jsonDecode(source) as Map<String, Object?>;
+    final data = decoded['data']! as Map<String, Object?>;
+    expect(data.containsKey('paired_devices'), isFalse);
+    expect(source, isNot(contains('public-certificate-placeholder')));
+
+    await service.restoreFromJson(source);
+    final trustedDevices = await database.select(database.pairedDevices).get();
+    expect(trustedDevices, hasLength(1));
+    expect(trustedDevices.single.deviceId, 'android-device-001');
+  });
+
   test('无效备份在创建安全备份和修改数据库前被拒绝', () async {
     await _createExpense(
       expenses,

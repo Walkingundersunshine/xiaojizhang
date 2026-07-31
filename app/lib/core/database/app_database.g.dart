@@ -1814,6 +1814,607 @@ class AppPreferencesCompanion extends UpdateCompanion<AppPreference> {
   }
 }
 
+class $PairedDevicesTable extends PairedDevices
+    with TableInfo<$PairedDevicesTable, PairedDevice> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PairedDevicesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _deviceIdMeta = const VerificationMeta(
+    'deviceId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+    'device_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 8,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _certificatePemMeta = const VerificationMeta(
+    'certificatePem',
+  );
+  @override
+  late final GeneratedColumn<String> certificatePem = GeneratedColumn<String>(
+    'certificate_pem',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 16384,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _certificateSha256Meta = const VerificationMeta(
+    'certificateSha256',
+  );
+  @override
+  late final GeneratedColumn<String> certificateSha256 =
+      GeneratedColumn<String>(
+        'certificate_sha256',
+        aliasedName,
+        false,
+        additionalChecks: GeneratedColumn.checkTextLength(
+          minTextLength: 64,
+          maxTextLength: 64,
+        ),
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _pairedAtUtcMillisecondsMeta =
+      const VerificationMeta('pairedAtUtcMilliseconds');
+  @override
+  late final GeneratedColumn<int> pairedAtUtcMilliseconds =
+      GeneratedColumn<int>(
+        'paired_at_utc_milliseconds',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _lastSyncAtUtcMillisecondsMeta =
+      const VerificationMeta('lastSyncAtUtcMilliseconds');
+  @override
+  late final GeneratedColumn<int> lastSyncAtUtcMilliseconds =
+      GeneratedColumn<int>(
+        'last_sync_at_utc_milliseconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isRevokedMeta = const VerificationMeta(
+    'isRevoked',
+  );
+  @override
+  late final GeneratedColumn<bool> isRevoked = GeneratedColumn<bool>(
+    'is_revoked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_revoked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _revokedAtUtcMillisecondsMeta =
+      const VerificationMeta('revokedAtUtcMilliseconds');
+  @override
+  late final GeneratedColumn<int> revokedAtUtcMilliseconds =
+      GeneratedColumn<int>(
+        'revoked_at_utc_milliseconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    deviceId,
+    displayName,
+    certificatePem,
+    certificateSha256,
+    pairedAtUtcMilliseconds,
+    lastSyncAtUtcMilliseconds,
+    isRevoked,
+    revokedAtUtcMilliseconds,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'paired_devices';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PairedDevice> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('device_id')) {
+      context.handle(
+        _deviceIdMeta,
+        deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('certificate_pem')) {
+      context.handle(
+        _certificatePemMeta,
+        certificatePem.isAcceptableOrUnknown(
+          data['certificate_pem']!,
+          _certificatePemMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_certificatePemMeta);
+    }
+    if (data.containsKey('certificate_sha256')) {
+      context.handle(
+        _certificateSha256Meta,
+        certificateSha256.isAcceptableOrUnknown(
+          data['certificate_sha256']!,
+          _certificateSha256Meta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_certificateSha256Meta);
+    }
+    if (data.containsKey('paired_at_utc_milliseconds')) {
+      context.handle(
+        _pairedAtUtcMillisecondsMeta,
+        pairedAtUtcMilliseconds.isAcceptableOrUnknown(
+          data['paired_at_utc_milliseconds']!,
+          _pairedAtUtcMillisecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_pairedAtUtcMillisecondsMeta);
+    }
+    if (data.containsKey('last_sync_at_utc_milliseconds')) {
+      context.handle(
+        _lastSyncAtUtcMillisecondsMeta,
+        lastSyncAtUtcMilliseconds.isAcceptableOrUnknown(
+          data['last_sync_at_utc_milliseconds']!,
+          _lastSyncAtUtcMillisecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_revoked')) {
+      context.handle(
+        _isRevokedMeta,
+        isRevoked.isAcceptableOrUnknown(data['is_revoked']!, _isRevokedMeta),
+      );
+    }
+    if (data.containsKey('revoked_at_utc_milliseconds')) {
+      context.handle(
+        _revokedAtUtcMillisecondsMeta,
+        revokedAtUtcMilliseconds.isAcceptableOrUnknown(
+          data['revoked_at_utc_milliseconds']!,
+          _revokedAtUtcMillisecondsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {deviceId};
+  @override
+  PairedDevice map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PairedDevice(
+      deviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      certificatePem: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}certificate_pem'],
+      )!,
+      certificateSha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}certificate_sha256'],
+      )!,
+      pairedAtUtcMilliseconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}paired_at_utc_milliseconds'],
+      )!,
+      lastSyncAtUtcMilliseconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_sync_at_utc_milliseconds'],
+      ),
+      isRevoked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_revoked'],
+      )!,
+      revokedAtUtcMilliseconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revoked_at_utc_milliseconds'],
+      ),
+    );
+  }
+
+  @override
+  $PairedDevicesTable createAlias(String alias) {
+    return $PairedDevicesTable(attachedDatabase, alias);
+  }
+}
+
+class PairedDevice extends DataClass implements Insertable<PairedDevice> {
+  final String deviceId;
+  final String displayName;
+  final String certificatePem;
+  final String certificateSha256;
+  final int pairedAtUtcMilliseconds;
+  final int? lastSyncAtUtcMilliseconds;
+  final bool isRevoked;
+  final int? revokedAtUtcMilliseconds;
+  const PairedDevice({
+    required this.deviceId,
+    required this.displayName,
+    required this.certificatePem,
+    required this.certificateSha256,
+    required this.pairedAtUtcMilliseconds,
+    this.lastSyncAtUtcMilliseconds,
+    required this.isRevoked,
+    this.revokedAtUtcMilliseconds,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['device_id'] = Variable<String>(deviceId);
+    map['display_name'] = Variable<String>(displayName);
+    map['certificate_pem'] = Variable<String>(certificatePem);
+    map['certificate_sha256'] = Variable<String>(certificateSha256);
+    map['paired_at_utc_milliseconds'] = Variable<int>(pairedAtUtcMilliseconds);
+    if (!nullToAbsent || lastSyncAtUtcMilliseconds != null) {
+      map['last_sync_at_utc_milliseconds'] = Variable<int>(
+        lastSyncAtUtcMilliseconds,
+      );
+    }
+    map['is_revoked'] = Variable<bool>(isRevoked);
+    if (!nullToAbsent || revokedAtUtcMilliseconds != null) {
+      map['revoked_at_utc_milliseconds'] = Variable<int>(
+        revokedAtUtcMilliseconds,
+      );
+    }
+    return map;
+  }
+
+  PairedDevicesCompanion toCompanion(bool nullToAbsent) {
+    return PairedDevicesCompanion(
+      deviceId: Value(deviceId),
+      displayName: Value(displayName),
+      certificatePem: Value(certificatePem),
+      certificateSha256: Value(certificateSha256),
+      pairedAtUtcMilliseconds: Value(pairedAtUtcMilliseconds),
+      lastSyncAtUtcMilliseconds:
+          lastSyncAtUtcMilliseconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAtUtcMilliseconds),
+      isRevoked: Value(isRevoked),
+      revokedAtUtcMilliseconds: revokedAtUtcMilliseconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(revokedAtUtcMilliseconds),
+    );
+  }
+
+  factory PairedDevice.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PairedDevice(
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      certificatePem: serializer.fromJson<String>(json['certificatePem']),
+      certificateSha256: serializer.fromJson<String>(json['certificateSha256']),
+      pairedAtUtcMilliseconds: serializer.fromJson<int>(
+        json['pairedAtUtcMilliseconds'],
+      ),
+      lastSyncAtUtcMilliseconds: serializer.fromJson<int?>(
+        json['lastSyncAtUtcMilliseconds'],
+      ),
+      isRevoked: serializer.fromJson<bool>(json['isRevoked']),
+      revokedAtUtcMilliseconds: serializer.fromJson<int?>(
+        json['revokedAtUtcMilliseconds'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'deviceId': serializer.toJson<String>(deviceId),
+      'displayName': serializer.toJson<String>(displayName),
+      'certificatePem': serializer.toJson<String>(certificatePem),
+      'certificateSha256': serializer.toJson<String>(certificateSha256),
+      'pairedAtUtcMilliseconds': serializer.toJson<int>(
+        pairedAtUtcMilliseconds,
+      ),
+      'lastSyncAtUtcMilliseconds': serializer.toJson<int?>(
+        lastSyncAtUtcMilliseconds,
+      ),
+      'isRevoked': serializer.toJson<bool>(isRevoked),
+      'revokedAtUtcMilliseconds': serializer.toJson<int?>(
+        revokedAtUtcMilliseconds,
+      ),
+    };
+  }
+
+  PairedDevice copyWith({
+    String? deviceId,
+    String? displayName,
+    String? certificatePem,
+    String? certificateSha256,
+    int? pairedAtUtcMilliseconds,
+    Value<int?> lastSyncAtUtcMilliseconds = const Value.absent(),
+    bool? isRevoked,
+    Value<int?> revokedAtUtcMilliseconds = const Value.absent(),
+  }) => PairedDevice(
+    deviceId: deviceId ?? this.deviceId,
+    displayName: displayName ?? this.displayName,
+    certificatePem: certificatePem ?? this.certificatePem,
+    certificateSha256: certificateSha256 ?? this.certificateSha256,
+    pairedAtUtcMilliseconds:
+        pairedAtUtcMilliseconds ?? this.pairedAtUtcMilliseconds,
+    lastSyncAtUtcMilliseconds: lastSyncAtUtcMilliseconds.present
+        ? lastSyncAtUtcMilliseconds.value
+        : this.lastSyncAtUtcMilliseconds,
+    isRevoked: isRevoked ?? this.isRevoked,
+    revokedAtUtcMilliseconds: revokedAtUtcMilliseconds.present
+        ? revokedAtUtcMilliseconds.value
+        : this.revokedAtUtcMilliseconds,
+  );
+  PairedDevice copyWithCompanion(PairedDevicesCompanion data) {
+    return PairedDevice(
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      certificatePem: data.certificatePem.present
+          ? data.certificatePem.value
+          : this.certificatePem,
+      certificateSha256: data.certificateSha256.present
+          ? data.certificateSha256.value
+          : this.certificateSha256,
+      pairedAtUtcMilliseconds: data.pairedAtUtcMilliseconds.present
+          ? data.pairedAtUtcMilliseconds.value
+          : this.pairedAtUtcMilliseconds,
+      lastSyncAtUtcMilliseconds: data.lastSyncAtUtcMilliseconds.present
+          ? data.lastSyncAtUtcMilliseconds.value
+          : this.lastSyncAtUtcMilliseconds,
+      isRevoked: data.isRevoked.present ? data.isRevoked.value : this.isRevoked,
+      revokedAtUtcMilliseconds: data.revokedAtUtcMilliseconds.present
+          ? data.revokedAtUtcMilliseconds.value
+          : this.revokedAtUtcMilliseconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PairedDevice(')
+          ..write('deviceId: $deviceId, ')
+          ..write('displayName: $displayName, ')
+          ..write('certificatePem: $certificatePem, ')
+          ..write('certificateSha256: $certificateSha256, ')
+          ..write('pairedAtUtcMilliseconds: $pairedAtUtcMilliseconds, ')
+          ..write('lastSyncAtUtcMilliseconds: $lastSyncAtUtcMilliseconds, ')
+          ..write('isRevoked: $isRevoked, ')
+          ..write('revokedAtUtcMilliseconds: $revokedAtUtcMilliseconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    deviceId,
+    displayName,
+    certificatePem,
+    certificateSha256,
+    pairedAtUtcMilliseconds,
+    lastSyncAtUtcMilliseconds,
+    isRevoked,
+    revokedAtUtcMilliseconds,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PairedDevice &&
+          other.deviceId == this.deviceId &&
+          other.displayName == this.displayName &&
+          other.certificatePem == this.certificatePem &&
+          other.certificateSha256 == this.certificateSha256 &&
+          other.pairedAtUtcMilliseconds == this.pairedAtUtcMilliseconds &&
+          other.lastSyncAtUtcMilliseconds == this.lastSyncAtUtcMilliseconds &&
+          other.isRevoked == this.isRevoked &&
+          other.revokedAtUtcMilliseconds == this.revokedAtUtcMilliseconds);
+}
+
+class PairedDevicesCompanion extends UpdateCompanion<PairedDevice> {
+  final Value<String> deviceId;
+  final Value<String> displayName;
+  final Value<String> certificatePem;
+  final Value<String> certificateSha256;
+  final Value<int> pairedAtUtcMilliseconds;
+  final Value<int?> lastSyncAtUtcMilliseconds;
+  final Value<bool> isRevoked;
+  final Value<int?> revokedAtUtcMilliseconds;
+  final Value<int> rowid;
+  const PairedDevicesCompanion({
+    this.deviceId = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.certificatePem = const Value.absent(),
+    this.certificateSha256 = const Value.absent(),
+    this.pairedAtUtcMilliseconds = const Value.absent(),
+    this.lastSyncAtUtcMilliseconds = const Value.absent(),
+    this.isRevoked = const Value.absent(),
+    this.revokedAtUtcMilliseconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PairedDevicesCompanion.insert({
+    required String deviceId,
+    required String displayName,
+    required String certificatePem,
+    required String certificateSha256,
+    required int pairedAtUtcMilliseconds,
+    this.lastSyncAtUtcMilliseconds = const Value.absent(),
+    this.isRevoked = const Value.absent(),
+    this.revokedAtUtcMilliseconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : deviceId = Value(deviceId),
+       displayName = Value(displayName),
+       certificatePem = Value(certificatePem),
+       certificateSha256 = Value(certificateSha256),
+       pairedAtUtcMilliseconds = Value(pairedAtUtcMilliseconds);
+  static Insertable<PairedDevice> custom({
+    Expression<String>? deviceId,
+    Expression<String>? displayName,
+    Expression<String>? certificatePem,
+    Expression<String>? certificateSha256,
+    Expression<int>? pairedAtUtcMilliseconds,
+    Expression<int>? lastSyncAtUtcMilliseconds,
+    Expression<bool>? isRevoked,
+    Expression<int>? revokedAtUtcMilliseconds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (deviceId != null) 'device_id': deviceId,
+      if (displayName != null) 'display_name': displayName,
+      if (certificatePem != null) 'certificate_pem': certificatePem,
+      if (certificateSha256 != null) 'certificate_sha256': certificateSha256,
+      if (pairedAtUtcMilliseconds != null)
+        'paired_at_utc_milliseconds': pairedAtUtcMilliseconds,
+      if (lastSyncAtUtcMilliseconds != null)
+        'last_sync_at_utc_milliseconds': lastSyncAtUtcMilliseconds,
+      if (isRevoked != null) 'is_revoked': isRevoked,
+      if (revokedAtUtcMilliseconds != null)
+        'revoked_at_utc_milliseconds': revokedAtUtcMilliseconds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PairedDevicesCompanion copyWith({
+    Value<String>? deviceId,
+    Value<String>? displayName,
+    Value<String>? certificatePem,
+    Value<String>? certificateSha256,
+    Value<int>? pairedAtUtcMilliseconds,
+    Value<int?>? lastSyncAtUtcMilliseconds,
+    Value<bool>? isRevoked,
+    Value<int?>? revokedAtUtcMilliseconds,
+    Value<int>? rowid,
+  }) {
+    return PairedDevicesCompanion(
+      deviceId: deviceId ?? this.deviceId,
+      displayName: displayName ?? this.displayName,
+      certificatePem: certificatePem ?? this.certificatePem,
+      certificateSha256: certificateSha256 ?? this.certificateSha256,
+      pairedAtUtcMilliseconds:
+          pairedAtUtcMilliseconds ?? this.pairedAtUtcMilliseconds,
+      lastSyncAtUtcMilliseconds:
+          lastSyncAtUtcMilliseconds ?? this.lastSyncAtUtcMilliseconds,
+      isRevoked: isRevoked ?? this.isRevoked,
+      revokedAtUtcMilliseconds:
+          revokedAtUtcMilliseconds ?? this.revokedAtUtcMilliseconds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (certificatePem.present) {
+      map['certificate_pem'] = Variable<String>(certificatePem.value);
+    }
+    if (certificateSha256.present) {
+      map['certificate_sha256'] = Variable<String>(certificateSha256.value);
+    }
+    if (pairedAtUtcMilliseconds.present) {
+      map['paired_at_utc_milliseconds'] = Variable<int>(
+        pairedAtUtcMilliseconds.value,
+      );
+    }
+    if (lastSyncAtUtcMilliseconds.present) {
+      map['last_sync_at_utc_milliseconds'] = Variable<int>(
+        lastSyncAtUtcMilliseconds.value,
+      );
+    }
+    if (isRevoked.present) {
+      map['is_revoked'] = Variable<bool>(isRevoked.value);
+    }
+    if (revokedAtUtcMilliseconds.present) {
+      map['revoked_at_utc_milliseconds'] = Variable<int>(
+        revokedAtUtcMilliseconds.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PairedDevicesCompanion(')
+          ..write('deviceId: $deviceId, ')
+          ..write('displayName: $displayName, ')
+          ..write('certificatePem: $certificatePem, ')
+          ..write('certificateSha256: $certificateSha256, ')
+          ..write('pairedAtUtcMilliseconds: $pairedAtUtcMilliseconds, ')
+          ..write('lastSyncAtUtcMilliseconds: $lastSyncAtUtcMilliseconds, ')
+          ..write('isRevoked: $isRevoked, ')
+          ..write('revokedAtUtcMilliseconds: $revokedAtUtcMilliseconds, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1821,6 +2422,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExpensesTable expenses = $ExpensesTable(this);
   late final $ExchangeRatesTable exchangeRates = $ExchangeRatesTable(this);
   late final $AppPreferencesTable appPreferences = $AppPreferencesTable(this);
+  late final $PairedDevicesTable pairedDevices = $PairedDevicesTable(this);
   late final Index expensesOccurredAtUtc = Index(
     'expenses_occurred_at_utc',
     'CREATE INDEX expenses_occurred_at_utc ON expenses (occurred_at_utc_milliseconds)',
@@ -1837,6 +2439,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'exchange_rates_requested_date',
     'CREATE INDEX exchange_rates_requested_date ON exchange_rates (requested_date)',
   );
+  late final Index pairedDevicesCertificateSha256 = Index(
+    'paired_devices_certificate_sha256',
+    'CREATE UNIQUE INDEX paired_devices_certificate_sha256 ON paired_devices (certificate_sha256)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1846,10 +2452,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     expenses,
     exchangeRates,
     appPreferences,
+    pairedDevices,
     expensesOccurredAtUtc,
     expensesCurrencyCode,
     expensesCategoryId,
     exchangeRatesRequestedDate,
+    pairedDevicesCertificateSha256,
   ];
 }
 
@@ -3070,6 +3678,275 @@ typedef $$AppPreferencesTableProcessedTableManager =
       AppPreference,
       PrefetchHooks Function()
     >;
+typedef $$PairedDevicesTableCreateCompanionBuilder =
+    PairedDevicesCompanion Function({
+      required String deviceId,
+      required String displayName,
+      required String certificatePem,
+      required String certificateSha256,
+      required int pairedAtUtcMilliseconds,
+      Value<int?> lastSyncAtUtcMilliseconds,
+      Value<bool> isRevoked,
+      Value<int?> revokedAtUtcMilliseconds,
+      Value<int> rowid,
+    });
+typedef $$PairedDevicesTableUpdateCompanionBuilder =
+    PairedDevicesCompanion Function({
+      Value<String> deviceId,
+      Value<String> displayName,
+      Value<String> certificatePem,
+      Value<String> certificateSha256,
+      Value<int> pairedAtUtcMilliseconds,
+      Value<int?> lastSyncAtUtcMilliseconds,
+      Value<bool> isRevoked,
+      Value<int?> revokedAtUtcMilliseconds,
+      Value<int> rowid,
+    });
+
+class $$PairedDevicesTableFilterComposer
+    extends Composer<_$AppDatabase, $PairedDevicesTable> {
+  $$PairedDevicesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get certificatePem => $composableBuilder(
+    column: $table.certificatePem,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get certificateSha256 => $composableBuilder(
+    column: $table.certificateSha256,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pairedAtUtcMilliseconds => $composableBuilder(
+    column: $table.pairedAtUtcMilliseconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastSyncAtUtcMilliseconds => $composableBuilder(
+    column: $table.lastSyncAtUtcMilliseconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRevoked => $composableBuilder(
+    column: $table.isRevoked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revokedAtUtcMilliseconds => $composableBuilder(
+    column: $table.revokedAtUtcMilliseconds,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PairedDevicesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PairedDevicesTable> {
+  $$PairedDevicesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get certificatePem => $composableBuilder(
+    column: $table.certificatePem,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get certificateSha256 => $composableBuilder(
+    column: $table.certificateSha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pairedAtUtcMilliseconds => $composableBuilder(
+    column: $table.pairedAtUtcMilliseconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastSyncAtUtcMilliseconds => $composableBuilder(
+    column: $table.lastSyncAtUtcMilliseconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isRevoked => $composableBuilder(
+    column: $table.isRevoked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revokedAtUtcMilliseconds => $composableBuilder(
+    column: $table.revokedAtUtcMilliseconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PairedDevicesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PairedDevicesTable> {
+  $$PairedDevicesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get certificatePem => $composableBuilder(
+    column: $table.certificatePem,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get certificateSha256 => $composableBuilder(
+    column: $table.certificateSha256,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get pairedAtUtcMilliseconds => $composableBuilder(
+    column: $table.pairedAtUtcMilliseconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lastSyncAtUtcMilliseconds => $composableBuilder(
+    column: $table.lastSyncAtUtcMilliseconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isRevoked =>
+      $composableBuilder(column: $table.isRevoked, builder: (column) => column);
+
+  GeneratedColumn<int> get revokedAtUtcMilliseconds => $composableBuilder(
+    column: $table.revokedAtUtcMilliseconds,
+    builder: (column) => column,
+  );
+}
+
+class $$PairedDevicesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PairedDevicesTable,
+          PairedDevice,
+          $$PairedDevicesTableFilterComposer,
+          $$PairedDevicesTableOrderingComposer,
+          $$PairedDevicesTableAnnotationComposer,
+          $$PairedDevicesTableCreateCompanionBuilder,
+          $$PairedDevicesTableUpdateCompanionBuilder,
+          (
+            PairedDevice,
+            BaseReferences<_$AppDatabase, $PairedDevicesTable, PairedDevice>,
+          ),
+          PairedDevice,
+          PrefetchHooks Function()
+        > {
+  $$PairedDevicesTableTableManager(_$AppDatabase db, $PairedDevicesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PairedDevicesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PairedDevicesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PairedDevicesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> deviceId = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<String> certificatePem = const Value.absent(),
+                Value<String> certificateSha256 = const Value.absent(),
+                Value<int> pairedAtUtcMilliseconds = const Value.absent(),
+                Value<int?> lastSyncAtUtcMilliseconds = const Value.absent(),
+                Value<bool> isRevoked = const Value.absent(),
+                Value<int?> revokedAtUtcMilliseconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PairedDevicesCompanion(
+                deviceId: deviceId,
+                displayName: displayName,
+                certificatePem: certificatePem,
+                certificateSha256: certificateSha256,
+                pairedAtUtcMilliseconds: pairedAtUtcMilliseconds,
+                lastSyncAtUtcMilliseconds: lastSyncAtUtcMilliseconds,
+                isRevoked: isRevoked,
+                revokedAtUtcMilliseconds: revokedAtUtcMilliseconds,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String deviceId,
+                required String displayName,
+                required String certificatePem,
+                required String certificateSha256,
+                required int pairedAtUtcMilliseconds,
+                Value<int?> lastSyncAtUtcMilliseconds = const Value.absent(),
+                Value<bool> isRevoked = const Value.absent(),
+                Value<int?> revokedAtUtcMilliseconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PairedDevicesCompanion.insert(
+                deviceId: deviceId,
+                displayName: displayName,
+                certificatePem: certificatePem,
+                certificateSha256: certificateSha256,
+                pairedAtUtcMilliseconds: pairedAtUtcMilliseconds,
+                lastSyncAtUtcMilliseconds: lastSyncAtUtcMilliseconds,
+                isRevoked: isRevoked,
+                revokedAtUtcMilliseconds: revokedAtUtcMilliseconds,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PairedDevicesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PairedDevicesTable,
+      PairedDevice,
+      $$PairedDevicesTableFilterComposer,
+      $$PairedDevicesTableOrderingComposer,
+      $$PairedDevicesTableAnnotationComposer,
+      $$PairedDevicesTableCreateCompanionBuilder,
+      $$PairedDevicesTableUpdateCompanionBuilder,
+      (
+        PairedDevice,
+        BaseReferences<_$AppDatabase, $PairedDevicesTable, PairedDevice>,
+      ),
+      PairedDevice,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3082,4 +3959,6 @@ class $AppDatabaseManager {
       $$ExchangeRatesTableTableManager(_db, _db.exchangeRates);
   $$AppPreferencesTableTableManager get appPreferences =>
       $$AppPreferencesTableTableManager(_db, _db.appPreferences);
+  $$PairedDevicesTableTableManager get pairedDevices =>
+      $$PairedDevicesTableTableManager(_db, _db.pairedDevices);
 }

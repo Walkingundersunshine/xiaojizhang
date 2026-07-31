@@ -9,6 +9,7 @@ import 'package:jizhangben/features/exchange_rates/data/local_exchange_rate_repo
 import 'package:jizhangben/features/expenses/data/local_expense_repository.dart';
 import 'package:jizhangben/features/diagnostics/data/diagnostic_log_file_controller.dart';
 import 'package:jizhangben/features/settings/data/local_settings_repository.dart';
+import 'package:jizhangben/features/sync/data/local_paired_device_repository.dart';
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final database = AppDatabase.open();
@@ -46,6 +47,11 @@ final localSettingsRepositoryProvider = Provider<LocalSettingsRepository>((
 ) {
   return LocalSettingsRepository(ref.watch(appDatabaseProvider));
 });
+
+final localPairedDeviceRepositoryProvider =
+    Provider<LocalPairedDeviceRepository>((ref) {
+      return LocalPairedDeviceRepository(ref.watch(appDatabaseProvider));
+    });
 
 final dataManagementServiceProvider = Provider<DataManagementService>((ref) {
   return DataManagementService(ref.watch(appDatabaseProvider));
