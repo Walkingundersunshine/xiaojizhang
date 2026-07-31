@@ -23,9 +23,29 @@ final class SyncHttpsStatus {
 /// A local-only HTTPS listener. Pairing and ledger routes will be added only
 /// after their request validation and transaction rules are implemented.
 final class SyncHttpsServer {
-  SyncHttpsServer({required this.identity});
+  SyncHttpsServer({
+    required this.identity,
+    this.requirePairedClientCertificate = false,
+    Iterable<String> trustedClientCertificatesPem = const [],
+  }) : _trustedClientCertificatesPem = List.unmodifiable(
+         trustedClientCertificatesPem,
+       ),
+       _trustedClientFingerprints = Set.unmodifiable(
+         trustedClientCertificatesPem.map(certificateFingerprint),
+       ) {
+    if (requirePairedClientCertificate &&
+        _trustedClientCertificatesPem.isEmpty) {
+      throw ArgumentError(
+        '要求双向 TLS 时必须至少提供一个已配对客户端证书',
+        'trustedClientCertificatesPem',
+      );
+    }
+  }
 
   final TlsDeviceIdentity identity;
+  final bool requirePairedClientCertificate;
+  final List<String> _trustedClientCertificatesPem;
+  final Set<String> _trustedClientFingerprints;
   HttpServer? _server;
 
   bool get isRunning => _server != null;
@@ -40,10 +60,20 @@ final class SyncHttpsServer {
     if (port < 0 || port > 65535) {
       throw ArgumentError.value(port, 'port', '端口必须为 0 至 65535');
     }
+    final context = identity.createSecurityContext();
+    if (requirePairedClientCertificate) {
+      final trustedCertificates = utf8.encode(
+        _trustedClientCertificatesPem.join('\n'),
+      );
+      context
+        ..setTrustedCertificatesBytes(trustedCertificates)
+        ..setClientAuthoritiesBytes(trustedCertificates);
+    }
     final server = await HttpServer.bindSecure(
       address,
       port,
-      identity.createSecurityContext(),
+      context,
+      requestClientCertificate: requirePairedClientCertificate,
       shared: false,
     );
     server
@@ -65,6 +95,25 @@ final class SyncHttpsServer {
       ..contentType = ContentType.json
       ..set(HttpHeaders.cacheControlHeader, 'no-store')
       ..set('x-content-type-options', 'nosniff');
+
+    if (requirePairedClientCertificate) {
+      final certificate = request.certificate;
+      if (certificate == null) {
+        response.statusCode = HttpStatus.unauthorized;
+        response.write(
+          jsonEncode(const {'error': 'client_certificate_required'}),
+        );
+        await response.close();
+        return;
+      }
+      final fingerprint = sha256.convert(certificate.der).toString();
+      if (!_trustedClientFingerprints.contains(fingerprint)) {
+        response.statusCode = HttpStatus.forbidden;
+        response.write(jsonEncode(const {'error': 'unpaired_client'}));
+        await response.close();
+        return;
+      }
+    }
 
     if (request.uri.path != SyncHttpsProtocol.statusPath) {
       response.statusCode = HttpStatus.notFound;
@@ -101,6 +150,7 @@ final class SyncHttpsClient {
     required String host,
     required int port,
     required String expectedCertificateSha256,
+    TlsDeviceIdentity? clientIdentity,
   }) async {
     if (InternetAddress.tryParse(host) == null) {
       throw ArgumentError.value(host, 'host', '连接地址必须为 IP');
@@ -116,17 +166,22 @@ final class SyncHttpsClient {
       );
     }
 
-    final client = HttpClient(context: SecurityContext(withTrustedRoots: false))
-      ..connectionTimeout = const Duration(seconds: 8)
-      ..idleTimeout = const Duration(seconds: 5)
-      ..badCertificateCallback =
-          (certificate, certificateHost, certificatePort) {
-            if (certificateHost != host || certificatePort != port) {
-              return false;
-            }
-            return sha256.convert(certificate.der).toString() ==
-                expectedCertificateSha256;
-          };
+    final client =
+        HttpClient(
+            context:
+                clientIdentity?.createSecurityContext() ??
+                SecurityContext(withTrustedRoots: false),
+          )
+          ..connectionTimeout = const Duration(seconds: 8)
+          ..idleTimeout = const Duration(seconds: 5)
+          ..badCertificateCallback =
+              (certificate, certificateHost, certificatePort) {
+                if (certificateHost != host || certificatePort != port) {
+                  return false;
+                }
+                return sha256.convert(certificate.der).toString() ==
+                    expectedCertificateSha256;
+              };
 
     try {
       final uri = Uri(
